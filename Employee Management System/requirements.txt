@@ -1,0 +1,11 @@
+# Employee Management System Requirements
+# No external dependencies required - uses only Python standard library
+
+# Python Version: 3.7+
+
+# This project uses only built-in Python modules:
+# - json (for data persistence)
+# - abc (for abstract base classes)
+# - datetime (for date handling)
+# - typing (for type hints)
+# - sys (for system operations)

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Employee Management System{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="page-{{ request.endpoint or 'default' }}">
+    <header class="site-header">
+        <div class="wrap header-layout">
+            <div>
+                <p class="eyebrow">Simple Employee Portal</p>
+                <h1><a href="{{ url_for('index') }}">Employee Management System</a></h1>
+                <p class="hero-copy">A basic web UI built with HTML, CSS, Python, and Flask.</p>
+            </div>
+            <div class="header-actions">
+                <a href="{{ url_for('add_employee') }}" class="btn btn-light">Add Employee</a>
+                <a href="{{ url_for('employees') }}" class="btn btn-outline-light">Employee List</a>
+            </div>
+        </div>
+    </header>
+
+    <nav class="site-nav">
+        <div class="wrap nav-links">
+            <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Dashboard</a>
+            <a href="{{ url_for('employees') }}" class="{% if request.endpoint in ['employees', 'view_employee', 'edit_employee', 'view_department'] %}active{% endif %}">Employees</a>
+            <a href="{{ url_for('add_employee') }}" class="{% if request.endpoint == 'add_employee' %}active{% endif %}">Add Employee</a>
+            <a href="{{ url_for('search') }}" class="{% if request.endpoint == 'search' %}active{% endif %}">Search</a>
+            <a href="{{ url_for('statistics') }}" class="{% if request.endpoint == 'statistics' %}active{% endif %}">Statistics</a>
+        </div>
+    </nav>
+
+    <main class="wrap main-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-stack">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrap">
+            <p>&copy; {{ current_year }} Employee Management System</p>
+        </div>
+    </footer>
+</body>
+</html>

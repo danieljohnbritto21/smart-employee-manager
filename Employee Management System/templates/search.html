@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Search | Employee Management System{% endblock %}
+
+{% block content %}
+<section class="page-head">
+    <div>
+        <p class="section-label">Search</p>
+        <h2>Find Employees</h2>
+        <p class="section-copy">Search by employee ID, name, or department.</p>
+    </div>
+</section>
+
+<section class="form-card">
+    <form method="GET" class="search-bar">
+        <div class="field">
+            <label for="search_term">Search Term</label>
+            <input type="text" id="search_term" name="search_term" value="{{ search_term }}" placeholder="Type a name, ID, or department">
+        </div>
+        <div class="action-row compact-actions">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a href="{{ url_for('search') }}" class="btn btn-secondary">Clear</a>
+        </div>
+    </form>
+</section>
+
+{% if search_term %}
+    {% if results %}
+    <section class="panel">
+        <div class="panel-head">
+            <h3>Results for "{{ search_term }}"</h3>
+            <p>{{ results|length }} employee(s) found</p>
+        </div>
+        <div class="table-scroll">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Salary</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for emp in results %}
+                    <tr>
+                        <td>{{ emp.emp_id }}</td>
+                        <td>{{ emp.name }}</td>
+                        <td>{{ emp.department }}</td>
+                        <td>{{ emp.email }}</td>
+                        <td>{{ emp.phone }}</td>
+                        <td>${{ emp.salary }}</td>
+                        <td><span class="status {% if emp.is_active %}status-active{% else %}status-inactive{% endif %}">{{ emp.status }}</span></td>
+                        <td><a href="{{ url_for('view_employee', emp_id=emp.emp_id) }}" class="btn btn-small btn-secondary">View</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+    {% else %}
+    <section class="empty-panel">
+        <h3>No results found</h3>
+        <p>No employees match "{{ search_term }}".</p>
+    </section>
+    {% endif %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}{{ department }} Department | Employee Management System{% endblock %}
+
+{% block content %}
+<section class="page-head">
+    <div>
+        <p class="section-label">Department</p>
+        <h2>{{ department }}</h2>
+        <p class="section-copy">Employees currently assigned to this department.</p>
+    </div>
+    <a href="{{ url_for('employees') }}" class="btn btn-secondary">Back to Employees</a>
+</section>
+
+{% if employees %}
+<section class="panel">
+    <div class="panel-head">
+        <h3>Total Employees</h3>
+        <p>{{ employees|length }}</p>
+    </div>
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Salary</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emp in employees %}
+                <tr>
+                    <td>{{ emp.emp_id }}</td>
+                    <td>{{ emp.name }}</td>
+                    <td>{{ emp.email }}</td>
+                    <td>{{ emp.phone }}</td>
+                    <td>${{ emp.salary }}</td>
+                    <td><span class="status {% if emp.is_active %}status-active{% else %}status-inactive{% endif %}">{{ emp.status }}</span></td>
+                    <td><a href="{{ url_for('view_employee', emp_id=emp.emp_id) }}" class="btn btn-small btn-secondary">View</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% else %}
+<section class="empty-panel">
+    <h3>No employees in this department</h3>
+    <p>Return to the employee list to explore other records.</p>
+</section>
+{% endif %}
+{% endblock %}

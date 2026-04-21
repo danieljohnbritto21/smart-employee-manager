@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Employee Management System{% endblock %}
+
+{% block content %}
+<section class="page-head">
+    <div>
+        <p class="section-label">Dashboard</p>
+        <h2>Overview</h2>
+        <p class="section-copy">See the current employee summary and jump into the main actions.</p>
+    </div>
+    <a href="{{ url_for('add_employee') }}" class="btn btn-primary">Create Employee</a>
+</section>
+
+<section class="stat-grid">
+    <article class="card">
+        <p class="card-label">Total Employees</p>
+        <h3>{{ stats.total_employees }}</h3>
+    </article>
+    <article class="card">
+        <p class="card-label">Active Employees</p>
+        <h3>{{ stats.active_employees }}</h3>
+    </article>
+    <article class="card">
+        <p class="card-label">Inactive Employees</p>
+        <h3>{{ stats.inactive_employees }}</h3>
+    </article>
+    <article class="card">
+        <p class="card-label">Total Salary</p>
+        <h3>${{ stats.total_salary }}</h3>
+    </article>
+    <article class="card">
+        <p class="card-label">Total Bonus</p>
+        <h3>${{ stats.total_bonus }}</h3>
+    </article>
+    <article class="card">
+        <p class="card-label">Total Compensation</p>
+        <h3>${{ stats.total_compensation }}</h3>
+    </article>
+</section>
+
+<section class="panel">
+    <div class="panel-head">
+        <h3>Quick Actions</h3>
+    </div>
+    <div class="action-row">
+        <a href="{{ url_for('employees') }}" class="btn btn-secondary">View Employees</a>
+        <a href="{{ url_for('add_employee') }}" class="btn btn-primary">Add Employee</a>
+        <a href="{{ url_for('search') }}" class="btn btn-secondary">Search</a>
+        <a href="{{ url_for('statistics') }}" class="btn btn-secondary">Statistics</a>
+    </div>
+</section>
+
+{% if recent_employees %}
+<section class="panel">
+    <div class="panel-head">
+        <h3>Recent Employees</h3>
+    </div>
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in recent_employees %}
+                <tr>
+                    <td>{{ employee.emp_id }}</td>
+                    <td>{{ employee.name }}</td>
+                    <td>{{ employee.department }}</td>
+                    <td>
+                        <span class="status {% if employee.is_active %}status-active{% else %}status-inactive{% endif %}">
+                            {{ employee.status }}
+                        </span>
+                    </td>
+                    <td><a href="{{ url_for('view_employee', emp_id=employee.emp_id) }}" class="btn btn-small btn-secondary">View</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% else %}
+<section class="empty-panel">
+    <h3>No employees yet</h3>
+    <p>Add the first employee to start using the web dashboard.</p>
+    <a href="{{ url_for('add_employee') }}" class="btn btn-primary">Add First Employee</a>
+</section>
+{% endif %}
+{% endblock %}

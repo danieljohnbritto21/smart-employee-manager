@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 3px solid white;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: white;
+            padding: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        nav button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        nav button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        nav button.active {
+            background: #764ba2;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .container {
+            flex: 1;
+            max-width: 1200px;
+            margin: 2rem auto;
+            width: 90%;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h3 {
+            color: #667eea;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .card .value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #764ba2;
+        }
+
+        .table-wrapper {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #667eea;
+            color: white;
+        }
+
+        th {
+            padding: 1.2rem;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        td {
+            padding: 1rem 1.2rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: white;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid white;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: Arial, sans-serif;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 10px rgba(118, 75, 162, 0.3);
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-container h2 {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn:hover {
+            background: #764ba2;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .badge-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .badge-info {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .message.success {
+            background: #d1fae5;
+            color: #065f46;
+            display: block;
+            border-left: 4px solid #10b981;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            color: #7f1d1d;
+            display: block;
+            border-left: 4px solid #ef4444;
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: auto;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: white;
+            padding: 3rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            nav button {
+                width: 100%;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>👥 Employee Management System</h1>
+        <p>Manage your employees with ease</p>
+    </header>
+
+    <nav>
+        <button onclick="showSection('dashboard')" class="nav-btn active">Dashboard</button>
+        <button onclick="showSection('employees')" class="nav-btn">Employees</button>
+        <button onclick="showSection('add')" class="nav-btn">Add Employee</button>
+        <button onclick="showSection('search')" class="nav-btn">Search</button>
+        <button onclick="showSection('statistics')" class="nav-btn">Statistics</button>
+    </nav>
+
+    <div class="container">
+        <!-- DASHBOARD SECTION -->
+        <div id="dashboard" class="section active">
+            <h2 style="color: white; margin-bottom: 2rem; text-align: center;">Dashboard Overview</h2>
+            <div class="dashboard">
+                <div class="card">
+                    <h3>Total Employees</h3>
+                    <div class="value" id="totalEmps">0</div>
+                </div>
+                <div class="card">
+                    <h3>Active</h3>
+                    <div class="value" style="color: #10b981;" id="activeEmps">0</div>
+                </div>
+                <div class="card">
+                    <h3>Inactive</h3>
+                    <div class="value" style="color: #ef4444;" id="inactiveEmps">0</div>
+                </div>
+                <div class="card">
+                    <h3>Total Salary</h3>
+                    <div class="value" style="color: #10b981; font-size: 1.8rem;" id="totalSalary">$0</div>
+                </div>
+                <div class="card">
+                    <h3>Total Bonus</h3>
+                    <div class="value" style="color: #f59e0b; font-size: 1.8rem;" id="totalBonus">$0</div>
+                </div>
+                <div class="card">
+                    <h3>Avg Salary</h3>
+                    <div class="value" style="color: #3b82f6; font-size: 1.8rem;" id="avgSalary">$0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EMPLOYEES SECTION -->
+        <div id="employees" class="section">
+            <h2 style="color: white; margin-bottom: 2rem;">All Employees</h2>
+            <div class="message" id="message"></div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Salary</th>
+                            <th>Email</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTable">
+                        <tr>
+                            <td colspan="8" style="text-align: center; color: #999;">No employees yet. Add one to get started!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ADD EMPLOYEE SECTION -->
+        <div id="add" class="section">
+            <div class="form-container">
+                <h2>➕ Add New Employee</h2>
+                <div class="message" id="addMessage"></div>
+
+                <form onsubmit="addEmployee(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Employee ID *</label>
+                            <input type="text" id="empId" placeholder="E001" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Employee Type *</label>
+                            <select id="empType" onchange="updateTypeFields()" required>
+                                <option value="">Select Type</option>
+                                <option value="fulltime">Full-Time</option>
+                                <option value="parttime">Part-Time</option>
+                                <option value="contract">Contract</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Name *</label>
+                            <input type="text" id="empName" placeholder="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Department *</label>
+                            <input type="text" id="empDept" placeholder="IT, HR, Finance..." required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email *</label>
+                            <input type="email" id="empEmail" placeholder="john@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone *</label>
+                            <input type="tel" id="empPhone" placeholder="(555) 123-4567" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Salary *</label>
+                            <input type="number" id="empSalary" placeholder="50000" min="0" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Joining Date *</label>
+                            <input type="date" id="empDate" required>
+                        </div>
+                    </div>
+
+                    <!-- Full-Time Fields -->
+                    <div id="ftFields" style="display: none;">
+                        <div class="form-group">
+                            <label>Benefits (comma-separated)</label>
+                            <textarea id="empBenefits" placeholder="Health Insurance, 401K, Dental..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Part-Time Fields -->
+                    <div id="ptFields" style="display: none;">
+                        <div class="form-group">
+                            <label>Hours per Week *</label>
+                            <input type="number" id="empHours" placeholder="20" min="0" max="40" step="0.5">
+                        </div>
+                    </div>
+
+                    <!-- Contract Fields -->
+                    <div id="ctFields" style="display: none;">
+                        <div class="form-group">
+                            <label>Contract End Date *</label>
+                            <input type="date" id="empEndDate">
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn">✓ Add Employee</button>
+                        <button type="reset" class="btn" onclick="resetForm()">Clear</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- SEARCH SECTION -->
+        <div id="search" class="section">
+            <div class="form-container">
+                <h2>🔍 Search Employees</h2>
+                <div class="form-group">
+                    <label>Search by ID, Name, or Department</label>
+                    <input type="text" id="searchInput" placeholder="Type to search..." onkeyup="searchEmployees()">
+                </div>
+            </div>
+
+            <div class="table-wrapper" style="margin-top: 2rem;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Salary</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="searchTable">
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: #999;">Start typing to search...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- STATISTICS SECTION -->
+        <div id="statistics" class="section">
+            <h2 style="color: white; margin-bottom: 2rem; text-align: center;">System Statistics</h2>
+            <div class="dashboard">
+                <div class="card">
+                    <h3>Total Employees</h3>
+                    <div class="value" id="statsTotal">0</div>
+                </div>
+                <div class="card">
+                    <h3>Full-Time</h3>
+                    <div class="value" style="color: #667eea;" id="statsFT">0</div>
+                </div>
+                <div class="card">
+                    <h3>Part-Time</h3>
+                    <div class="value" style="color: #764ba2;" id="statsPT">0</div>
+                </div>
+                <div class="card">
+                    <h3>Contract</h3>
+                    <div class="value" style="color: #f59e0b;" id="statsCT">0</div>
+                </div>
+            </div>
+
+            <div style="background: white; padding: 2rem; border-radius: 10px; margin-top: 2rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
+                <h3 style="color: #667eea; margin-bottom: 1.5rem; font-size: 1.3rem;">Financial Summary</h3>
+                <div style="display: grid; gap: 1rem;">
+                    <div style="display: flex; justify-content: space-between; padding: 0.8rem 0; border-bottom: 1px solid #eee;">
+                        <span style="font-weight: bold;">Total Annual Salary:</span>
+                        <span style="color: #10b981; font-weight: bold; font-size: 1.1rem;" id="statsSalary">$0</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.8rem 0; border-bottom: 1px solid #eee;">
+                        <span style="font-weight: bold;">Total Annual Bonus:</span>
+                        <span style="color: #f59e0b; font-weight: bold; font-size: 1.1rem;" id="statsBonus">$0</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.8rem 0;">
+                        <span style="font-weight: bold;">Average Salary:</span>
+                        <span style="color: #3b82f6; font-weight: bold; font-size: 1.1rem;" id="statsAvg">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 Employee Management System | Built with Python OOP & HTML/CSS</p>
+    </footer>
+
+    <script>
+        // Sample data
+        let employees = [];
+
+        // Show section
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (id === 'dashboard' || id === 'statistics') {
+                updateStatistics();
+            }
+        }
+
+        // Update type fields
+        function updateTypeFields() {
+            const type = document.getElementById('empType').value;
+            document.getElementById('ftFields').style.display = type === 'fulltime' ? 'block' : 'none';
+            document.getElementById('ptFields').style.display = type === 'parttime' ? 'block' : 'none';
+            document.getElementById('ctFields').style.display = type === 'contract' ? 'block' : 'none';
+        }
+
+        // Add employee
+        function addEmployee(e) {
+            e.preventDefault();
+            
+            const employee = {
+                id: document.getElementById('empId').value,
+                name: document.getElementById('empName').value,
+                email: document.getElementById('empEmail').value,
+                phone: document.getElementById('empPhone').value,
+                department: document.getElementById('empDept').value,
+                salary: parseFloat(document.getElementById('empSalary').value),
+                date: document.getElementById('empDate').value,
+                type: document.getElementById('empType').value,
+                active: true
+            };
+
+            // Add type-specific fields
+            if (employee.type === 'fulltime') {
+                employee.benefits = document.getElementById('empBenefits').value;
+                employee.bonus = employee.salary * 0.10;
+            } else if (employee.type === 'parttime') {
+                employee.hours = parseFloat(document.getElementById('empHours').value);
+                employee.bonus = employee.salary * 0.05;
+            } else if (employee.type === 'contract') {
+                employee.endDate = document.getElementById('empEndDate').value;
+                employee.bonus = 0;
+            }
+
+            // Check for duplicate ID
+            if (employees.find(e => e.id === employee.id)) {
+                showMessage('addMessage', 'Employee ID already exists!', 'error');
+                return;
+            }
+
+            employees.push(employee);
+            saveToLocalStorage();
+            
+            showMessage('addMessage', `✓ Employee ${employee.name} added successfully!`, 'success');
+            document.querySelector('form').reset();
+            updateTypeFields();
+            
+            setTimeout(() => {
+                showSection('employees');
+                document.querySelectorAll('.nav-btn')[1].click();
+            }, 1500);
+        }
+
+        // Display employees
+        function displayEmployees() {
+            const table = document.getElementById('employeeTable');
+            
+            if (employees.length === 0) {
+                table.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #999;">No employees yet. Add one to get started!</td></tr>';
+                return;
+            }
+
+            table.innerHTML = employees.map(emp => `
+                <tr>
+                    <td><strong>${emp.id}</strong></td>
+                    <td>${emp.name}</td>
+                    <td>${emp.department}</td>
+                    <td>$${emp.salary.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                    <td>${emp.email}</td>
+                    <td><span class="badge badge-info">${emp.type}</span></td>
+                    <td>${emp.active ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-danger">Inactive</span>'}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-small" onclick="deleteEmployee('${emp.id}')">Delete</button>
+                            <button class="btn btn-small" onclick="toggleStatus('${emp.id}')">${emp.active ? 'Deactivate' : 'Activate'}</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Delete employee
+        function deleteEmployee(id) {
+            if (confirm('Are you sure?')) {
+                employees = employees.filter(e => e.id !== id);
+                saveToLocalStorage();
+                displayEmployees();
+                updateStatistics();
+            }
+        }
+
+        // Toggle status
+        function toggleStatus(id) {
+            const emp = employees.find(e => e.id === id);
+            if (emp) {
+                emp.active = !emp.active;
+                saveToLocalStorage();
+                displayEmployees();
+                updateStatistics();
+            }
+        }
+
+        // Search employees
+        function searchEmployees() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = employees.filter(e => 
+                e.id.toLowerCase().includes(term) || 
+                e.name.toLowerCase().includes(term) || 
+                e.department.toLowerCase().includes(term)
+            );
+
+            const table = document.getElementById('searchTable');
+            if (filtered.length === 0) {
+                table.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #999;">No results found</td></tr>';
+                return;
+            }
+
+            table.innerHTML = filtered.map(emp => `
+                <tr>
+                    <td><strong>${emp.id}</strong></td>
+                    <td>${emp.name}</td>
+                    <td>${emp.department}</td>
+                    <td>$${emp.salary.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                    <td>${emp.active ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-danger">Inactive</span>'}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            const active = employees.filter(e => e.active);
+            const inactive = employees.filter(e => !e.active);
+            const totalSalary = active.reduce((sum, e) => sum + e.salary, 0);
+            const totalBonus = active.reduce((sum, e) => sum + e.bonus, 0);
+            const avgSalary = active.length > 0 ? totalSalary / active.length : 0;
+
+            // Dashboard stats
+            document.getElementById('totalEmps').textContent = employees.length;
+            document.getElementById('activeEmps').textContent = active.length;
+            document.getElementById('inactiveEmps').textContent = inactive.length;
+            document.getElementById('totalSalary').textContent = '$' + totalSalary.toLocaleString('en-US', {minimumFractionDigits: 2});
+            document.getElementById('totalBonus').textContent = '$' + totalBonus.toLocaleString('en-US', {minimumFractionDigits: 2});
+            document.getElementById('avgSalary').textContent = '$' + avgSalary.toLocaleString('en-US', {minimumFractionDigits: 2});
+
+            // Statistics page
+            const ft = employees.filter(e => e.type === 'fulltime').length;
+            const pt = employees.filter(e => e.type === 'parttime').length;
+            const ct = employees.filter(e => e.type === 'contract').length;
+
+            document.getElementById('statsTotal').textContent = employees.length;
+            document.getElementById('statsFT').textContent = ft;
+            document.getElementById('statsPT').textContent = pt;
+            document.getElementById('statsCT').textContent = ct;
+            document.getElementById('statsSalary').textContent = '$' + totalSalary.toLocaleString('en-US', {minimumFractionDigits: 2});
+            document.getElementById('statsBonus').textContent = '$' + totalBonus.toLocaleString('en-US', {minimumFractionDigits: 2});
+            document.getElementById('statsAvg').textContent = '$' + avgSalary.toLocaleString('en-US', {minimumFractionDigits: 2});
+        }
+
+        // Show message
+        function showMessage(elementId, text, type) {
+            const msg = document.getElementById(elementId);
+            msg.textContent = text;
+            msg.className = `message ${type}`;
+            setTimeout(() => msg.className = 'message', 3000);
+        }
+
+        // Reset form
+        function resetForm() {
+            updateTypeFields();
+        }
+
+        // Local storage
+        function saveToLocalStorage() {
+            localStorage.setItem('employees', JSON.stringify(employees));
+        }
+
+        function loadFromLocalStorage() {
+            const data = localStorage.getItem('employees');
+            if (data) {
+                employees = JSON.parse(data);
+                displayEmployees();
+                updateStatistics();
+            }
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            loadFromLocalStorage();
+            updateStatistics();
+            
+            // Set today's date as default
+            document.getElementById('empDate').valueAsDate = new Date();
+        });
+    </script>
+</body>
+</html>

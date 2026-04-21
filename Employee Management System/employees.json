@@ -1,0 +1,31 @@
+{
+    "E-01": {
+        "type": "FullTimeEmployee",
+        "emp_id": "E-01",
+        "name": "Ram",
+        "email": "ram@gmail.com",
+        "phone": "98987686",
+        "department": "HR",
+        "salary": 30000.0,
+        "joining_date": "2026-04-21",
+        "is_active": true,
+        "benefits": [
+            "Health Insurance",
+            "Paid leave"
+        ]
+    },
+    "E001": {
+        "type": "FullTimeEmployee",
+        "emp_id": "E001",
+        "name": "John Doe",
+        "email": "john@example.com",
+        "phone": "9876543210",
+        "department": "HR",
+        "salary": 50000.0,
+        "joining_date": "2026-04-21",
+        "is_active": true,
+        "benefits": [
+            "Health"
+        ]
+    }
+}
